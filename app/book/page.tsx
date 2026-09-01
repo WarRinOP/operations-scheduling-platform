@@ -82,7 +82,7 @@ export default function BookServicePage() {
     try {
       const newBooking = await createBooking({
         customer_id: currentProfile.role === 'customer' ? currentProfile.id : 'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
-        technician_id: selectedSlot.technician_id || null,
+        technician_id: null,
         service_id: selectedService.id,
         scheduled_start: selectedSlot.start,
         scheduled_end: selectedSlot.end,
@@ -371,11 +371,9 @@ export default function BookServicePage() {
                     >
                       <span className="font-bold">{startTime}</span>
                       <span className="text-[10px] text-slate-500">to {endTime}</span>
-                      {slot.technician_name && (
-                        <span className="text-[9px] text-emerald-700 font-medium mt-1">
-                          ✓ {slot.technician_name}
-                        </span>
-                      )}
+                      <span className="text-[9px] text-emerald-700 font-medium mt-1">
+                        ✓ Capacity Available
+                      </span>
                     </button>
                   );
                 })}

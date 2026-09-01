@@ -155,8 +155,8 @@ export default function BookingTrackerPage() {
           </div>
         </div>
 
-        {/* Live Technician Card (Minimal Initial Badge, Zero Faces) */}
-        {technician && (
+        {/* Live Technician Card (Shows Awaiting Dispatch when pending, Shows Technician when scheduled) */}
+        {technician && booking.status !== 'pending' ? (
           <div className="rounded-xl border border-slate-200 bg-slate-50 p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-lg bg-slate-800 text-white font-bold flex items-center justify-center text-xs border border-slate-700">
@@ -179,6 +179,21 @@ export default function BookingTrackerPage() {
                 <span>En Route in Dhaka • ETA ~20 mins</span>
               </div>
             )}
+          </div>
+        ) : (
+          <div className="rounded-xl border border-amber-200 bg-amber-50/40 p-4 flex items-center justify-between">
+            <div className="space-y-0.5">
+              <div className="text-xs font-bold text-amber-900 flex items-center gap-1.5">
+                <span className="flex h-2 w-2 rounded-full bg-amber-500 animate-pulse" />
+                Awaiting Operations Staff Dispatch
+              </div>
+              <p className="text-[11px] text-amber-700">
+                Deposit verified. The dispatcher is reviewing required skills and assigning a technician.
+              </p>
+            </div>
+            <span className="text-[10px] font-bold text-amber-800 bg-amber-100 px-2.5 py-1 rounded border border-amber-200 uppercase">
+              Pending Assign
+            </span>
           </div>
         )}
 
@@ -268,24 +283,24 @@ export default function BookingTrackerPage() {
               </span>
             </div>
             <p className="text-slate-700 text-[11px] font-mono leading-relaxed bg-white p-2 rounded border border-slate-200">
-              "Deposit Confirmed: Your booking #{booking.id.slice(-6).toUpperCase()} for {service?.name} has been locked. Total: {formatBDT(booking.total_amount)}."
+              "Deposit Confirmed: Your booking #{booking.id.slice(-6).toUpperCase()} for {service?.name} has been locked & deposit received. Awaiting dispatcher staff assignment."
             </p>
           </div>
 
-          {/* 2. Staff Assigned Alert */}
-          {technician && (
-            <div className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs space-y-1">
+          {/* 2. Staff Assigned Alert (ONLY when scheduled or beyond) */}
+          {['scheduled', 'en_route', 'in_progress', 'completed', 'billed'].includes(booking.status) && technician && (
+            <div className="rounded-lg border border-blue-200 bg-blue-50/40 p-3 text-xs space-y-1">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1.5 font-bold text-slate-900">
-                  <Smartphone className="h-3.5 w-3.5 text-slate-500" />
+                <div className="flex items-center gap-1.5 font-bold text-blue-900">
+                  <Smartphone className="h-3.5 w-3.5 text-blue-600" />
                   <span>Technician Assigned Notification</span>
                 </div>
-                <span className="text-[10px] text-emerald-700 bg-emerald-100 font-bold px-1.5 py-0.2 rounded font-mono">
-                  Delivered
+                <span className="text-[10px] text-blue-700 bg-blue-100 font-bold px-1.5 py-0.2 rounded font-mono border border-blue-200">
+                  Dispatched
                 </span>
               </div>
-              <p className="text-slate-700 text-[11px] font-mono leading-relaxed bg-white p-2 rounded border border-slate-200">
-                "Staff Scheduled: Technician {technician.full_name} ({technician.phone}) assigned for your service in Dhaka."
+              <p className="text-slate-700 text-[11px] font-mono leading-relaxed bg-white p-2 rounded border border-blue-200">
+                "Staff Scheduled: Dispatcher has assigned Technician {technician.full_name} ({technician.phone}) to your appointment."
               </p>
             </div>
           )}

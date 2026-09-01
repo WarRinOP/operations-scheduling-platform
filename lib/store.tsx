@@ -145,6 +145,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const newBooking: Booking = {
       ...bookingData,
       id: newId,
+      technician_id: null,
       status: 'pending',
       created_at: new Date().toISOString(),
     };
