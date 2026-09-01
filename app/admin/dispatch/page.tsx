@@ -175,6 +175,25 @@ export default function DispatchKanbanPage() {
           </div>
         </div>
 
+        {/* Live Presentation Demo Banner (when pipeline has 0 jobs) */}
+        {bookings.length === 0 && (
+          <div className="bg-slate-900 text-white px-4 sm:px-6 py-2.5 flex items-center justify-between text-xs border-b border-slate-800 shrink-0">
+            <div className="flex items-center gap-2">
+              <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="font-semibold text-slate-200">
+                Live Demo Mode: Pipeline is clean (0 active jobs). Create a booking at{' '}
+                <span className="font-mono text-emerald-400 font-bold">/book</span> to demonstrate the full end-to-end flow!
+              </span>
+            </div>
+            <Link
+              href="/book"
+              className="inline-flex items-center gap-1 bg-white text-slate-950 font-bold px-2.5 py-1 rounded text-[11px] hover:bg-slate-100 transition-colors shadow-xs shrink-0"
+            >
+              Book Service Now <ArrowRight className="h-3 w-3" />
+            </Link>
+          </div>
+        )}
+
         {/* 6-Column Kanban Board */}
         <div className="flex-1 overflow-x-auto p-4 sm:p-6">
           <div className="grid grid-cols-6 gap-4 min-w-[1400px] h-full">

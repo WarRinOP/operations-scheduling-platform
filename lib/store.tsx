@@ -41,11 +41,11 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | null>(null);
 
 const STORAGE_KEYS = {
-  PROFILES: 'osp_profiles_bd_v2',
-  SERVICES: 'osp_services_bd_v2',
-  BOOKINGS: 'osp_bookings_bd_v2',
-  LOGS: 'osp_logs_bd_v2',
-  CURRENT_USER_ID: 'osp_current_user_id_bd_v2',
+  PROFILES: 'osp_profiles_v4',
+  SERVICES: 'osp_services_v4',
+  BOOKINGS: 'osp_bookings_v4',
+  LOGS: 'osp_logs_v4',
+  CURRENT_USER_ID: 'osp_current_user_id_v4',
 };
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -283,7 +283,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       localStorage.removeItem(STORAGE_KEYS.LOGS);
       localStorage.removeItem(STORAGE_KEYS.CURRENT_USER_ID);
     } catch {}
-    showToast('Platform reset to demo seed state', 'info');
+    showToast('Platform reset to 0 active jobs (ready for live demo)', 'info');
   };
 
   return (
