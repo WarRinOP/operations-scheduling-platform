@@ -14,6 +14,9 @@ export interface Profile {
   email: string;
   phone?: string;
   role: UserRole;
+  skills?: string[];
+  assigned_zone?: string;
+  rating?: number;
   created_at: string;
 }
 

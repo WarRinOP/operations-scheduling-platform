@@ -322,9 +322,14 @@ export default function BookServicePage() {
                   Available Dynamic Slots ({format(selectedDate, 'MMMM d, yyyy')})
                 </h3>
               </div>
-              <span className="text-xs text-slate-500 font-mono">
-                {availableSlots.filter((s) => s.available).length} slots free
-              </span>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                  🔒 Concurrency Lock Active (FR-03)
+                </span>
+                <span className="text-xs text-slate-500 font-mono">
+                  {availableSlots.filter((s) => s.available).length} slots free
+                </span>
+              </div>
             </div>
 
             {availableSlots.filter((s) => s.available).length === 0 ? (

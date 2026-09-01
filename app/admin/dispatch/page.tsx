@@ -317,96 +317,156 @@ export default function DispatchKanbanPage() {
           </div>
         </div>
 
-        {/* Staff Assignment Modal (Minimal Initial Badges) */}
-        {assigningBooking && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4 animate-fade-in">
-            <div className="w-full max-w-md rounded-xl border border-slate-200 bg-white p-6 shadow-2xl space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                <div>
-                  <h3 className="text-sm font-bold text-slate-900">
-                    Assign Field Technician (Dhaka)
-                  </h3>
-                  <p className="text-xs text-slate-500">
-                    Booking #{assigningBooking.id.slice(-6).toUpperCase()} • Transitions to Scheduled
-                  </p>
+        {/* Staff Assignment Modal (Skill-Based Dispatching & Zone Proximity) */}
+        {assigningBooking && (() => {
+          const assigningService = services.find((s) => s.id === assigningBooking.service_id);
+
+          return (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4 animate-fade-in">
+              <div className="w-full max-w-lg rounded-xl border border-slate-200 bg-white p-6 shadow-2xl space-y-4">
+                <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900">
+                      Skill-Based Staff Dispatch (Dhaka)
+                    </h3>
+                    <p className="text-xs text-slate-500">
+                      Job #{assigningBooking.id.slice(-6).toUpperCase()} • {assigningService?.name}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setAssigningBooking(null)}
+                    className="rounded p-1 text-slate-400 hover:text-slate-700"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
                 </div>
-                <button
-                  onClick={() => setAssigningBooking(null)}
-                  className="rounded p-1 text-slate-400 hover:text-slate-700"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              </div>
 
-              <form onSubmit={handleAssignSubmit} className="space-y-4">
-                <div className="space-y-2">
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-                    Select Field Technician
-                  </label>
+                <form onSubmit={handleAssignSubmit} className="space-y-4">
                   <div className="space-y-2">
-                    {technicians.map((t) => {
-                      const isSelected = selectedTechId === t.id;
-                      const techActiveJobs = bookings.filter(
-                        (b) => b.technician_id === t.id && ['scheduled', 'en_route', 'in_progress'].includes(b.status)
-                      ).length;
+                    <div className="flex items-center justify-between">
+                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                        Available Field Technicians
+                      </label>
+                      <span className="text-[10px] text-slate-500 font-medium">
+                        Filtered by Skill & Zone Proximity
+                      </span>
+                    </div>
 
-                      return (
-                        <div
-                          key={t.id}
-                          onClick={() => setSelectedTechId(t.id)}
-                          className={`flex items-center justify-between rounded-xl border p-3 cursor-pointer transition-all ${
-                            isSelected
-                              ? 'border-slate-900 bg-slate-900 text-white shadow-sm'
-                              : 'border-slate-200 bg-white hover:border-slate-300'
-                          }`}
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="h-8 w-8 rounded-lg bg-slate-800 text-white font-bold flex items-center justify-center text-xs border border-slate-700">
-                              {getInitials(t.full_name)}
-                            </div>
-                            <div>
-                              <div className="text-xs font-bold">{t.full_name}</div>
-                              <div className={`text-[11px] font-mono ${isSelected ? 'text-slate-300' : 'text-slate-500'}`}>
-                                {t.phone}
-                              </div>
-                            </div>
-                          </div>
+                    <div className="space-y-2.5 max-h-[340px] overflow-y-auto pr-1">
+                      {technicians.map((t) => {
+                        const isSelected = selectedTechId === t.id;
+                        const techActiveJobs = bookings.filter(
+                          (b) => b.technician_id === t.id && ['scheduled', 'en_route', 'in_progress'].includes(b.status)
+                        ).length;
 
-                          <span
-                            className={`text-[10px] font-bold px-2 py-0.5 rounded ${
+                        // Check skill match with service
+                        const hasSkillMatch = t.skills?.some((skill) =>
+                          assigningService?.name.toLowerCase().includes(skill.toLowerCase()) ||
+                          skill.toLowerCase().includes(assigningService?.name.slice(0, 8).toLowerCase() || '')
+                        );
+
+                        return (
+                          <div
+                            key={t.id}
+                            onClick={() => setSelectedTechId(t.id)}
+                            className={`rounded-xl border p-3.5 cursor-pointer transition-all space-y-2 ${
                               isSelected
-                                ? 'bg-slate-800 text-slate-200 border border-slate-700'
-                                : 'bg-slate-100 text-slate-700'
+                                ? 'border-slate-900 bg-slate-900 text-white shadow-sm'
+                                : 'border-slate-200 bg-white hover:border-slate-300'
                             }`}
                           >
-                            {techActiveJobs} Active
-                          </span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
+                            <div className="flex items-start justify-between">
+                              <div className="flex items-center gap-3">
+                                <div className={`h-8 w-8 rounded-lg font-bold flex items-center justify-center text-xs border ${
+                                  isSelected
+                                    ? 'bg-emerald-500 text-slate-950 border-emerald-400'
+                                    : 'bg-slate-800 text-white border-slate-700'
+                                }`}>
+                                  {getInitials(t.full_name)}
+                                </div>
+                                <div>
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-xs font-bold">{t.full_name}</span>
+                                    {t.rating && (
+                                      <span className={`text-[10px] font-bold px-1.5 py-0.2 rounded ${
+                                        isSelected ? 'bg-slate-800 text-amber-300' : 'bg-amber-50 text-amber-700 border border-amber-200'
+                                      }`}>
+                                        ★ {t.rating}
+                                      </span>
+                                    )}
+                                  </div>
+                                  <div className={`text-[11px] font-mono ${isSelected ? 'text-slate-300' : 'text-slate-500'}`}>
+                                    {t.assigned_zone || 'Dhaka Central'}
+                                  </div>
+                                </div>
+                              </div>
 
-                <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
-                  <button
-                    type="button"
-                    onClick={() => setAssigningBooking(null)}
-                    className="rounded-lg border border-slate-200 px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={isAssigning || !selectedTechId}
-                    className="rounded-lg bg-slate-900 px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-slate-800 disabled:opacity-50"
-                  >
-                    {isAssigning ? 'Locking Schedule...' : 'Lock Technician & Schedule'}
-                  </button>
-                </div>
-              </form>
+                              <div className="flex items-center gap-1.5">
+                                {hasSkillMatch && (
+                                  <span className={`text-[9px] font-bold px-2 py-0.5 rounded uppercase ${
+                                    isSelected
+                                      ? 'bg-emerald-500 text-slate-950 font-black'
+                                      : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                                  }`}>
+                                    ✓ Skill Match
+                                  </span>
+                                )}
+                                <span
+                                  className={`text-[10px] font-bold px-2 py-0.5 rounded ${
+                                    isSelected
+                                      ? 'bg-slate-800 text-slate-200 border border-slate-700'
+                                      : 'bg-slate-100 text-slate-700'
+                                  }`}
+                                >
+                                  {techActiveJobs} Active
+                                </span>
+                              </div>
+                            </div>
+
+                            {/* Technician Skills Badges */}
+                            {t.skills && (
+                              <div className="flex flex-wrap gap-1 pt-1 border-t border-slate-100/20">
+                                {t.skills.map((skill, idx) => (
+                                  <span
+                                    key={idx}
+                                    className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${
+                                      isSelected
+                                        ? 'bg-slate-800 text-slate-300'
+                                        : 'bg-slate-100 text-slate-600'
+                                    }`}
+                                  >
+                                    {skill}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+                    <button
+                      type="button"
+                      onClick={() => setAssigningBooking(null)}
+                      className="rounded-lg border border-slate-200 px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={isAssigning || !selectedTechId}
+                      className="rounded-lg bg-slate-900 px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-slate-800 disabled:opacity-50"
+                    >
+                      {isAssigning ? 'Locking Schedule...' : 'Lock Technician & Schedule'}
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
-          </div>
-        )}
+          );
+        })()}
       </div>
     </RoleGuard>
   );

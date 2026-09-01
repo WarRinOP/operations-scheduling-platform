@@ -15,6 +15,9 @@ export const INITIAL_PROFILES: Profile[] = [
     email: 'kazi.shakil@opsflow.bd',
     phone: '+880 1819-345678',
     role: 'technician',
+    skills: ['Ceramic Paint Protection', 'Machine Swirl Buffing', 'Mechanical Diagnostics'],
+    assigned_zone: 'Zone 1: Gulshan / Banani / Uttara',
+    rating: 4.9,
     created_at: new Date(Date.now() - 60 * 86400000).toISOString(),
   },
   {
@@ -23,6 +26,9 @@ export const INITIAL_PROFILES: Profile[] = [
     email: 'mehedi.hasan@opsflow.bd',
     phone: '+880 1912-456789',
     role: 'technician',
+    skills: ['Executive Car Detailing', 'Interior Steam Sanitization', 'AC Foam Treatment'],
+    assigned_zone: 'Zone 2: Dhanmondi / Mirpur / Mohammadpur',
+    rating: 4.8,
     created_at: new Date(Date.now() - 45 * 86400000).toISOString(),
   },
   {
@@ -31,6 +37,7 @@ export const INITIAL_PROFILES: Profile[] = [
     email: 'admin@opsflow.com.bd',
     phone: '+880 1713-567890',
     role: 'admin',
+    assigned_zone: 'Dhaka Operations Central',
     created_at: new Date(Date.now() - 90 * 86400000).toISOString(),
   },
 ];
