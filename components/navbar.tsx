@@ -16,8 +16,7 @@ import {
   Wrench,
   User,
   LogIn,
-  FileCheck2,
-  FileText
+  LogOut
 } from 'lucide-react';
 
 export const Navbar: React.FC = () => {
@@ -31,7 +30,6 @@ export const Navbar: React.FC = () => {
     { href: '/admin/dispatch', label: 'Dispatch Kanban', icon: LayoutDashboard, roles: ['admin'] },
     { href: '/tech/active-job', label: 'Tech Mobile View', icon: Smartphone, roles: ['technician'] },
     { href: '/admin/analytics', label: 'Analytics & Logs', icon: BarChart3, roles: ['admin'] },
-    { href: '/slides', label: 'Slides Deck', icon: FileText, roles: ['customer', 'technician', 'admin'] },
     { href: '/login', label: 'Portal Login', icon: LogIn, roles: ['customer', 'technician', 'admin'] },
   ];
 
